@@ -15,7 +15,7 @@ def bCPO(SearchAgents_no, Max_iter, dim, fobj):
     Ant_pos = np.zeros(dim)
     Ant_score = float('inf')
     
-    # Initialize the positions of search agents (usaremos ceros y unos aleatorios)
+    # Inicializar las posiciones de los agentes de búsqueda (usaremos ceros y unos aleatorios)
     # Reutilizamos la función de inicialización y luego forzamos a binario
     Positions = initialization(SearchAgents_no, dim, ub, lb)
     Positions = np.round(Positions) # Aseguramos que la población inicial sea puramente binaria
@@ -28,10 +28,10 @@ def bCPO(SearchAgents_no, Max_iter, dim, fobj):
     
     while t < Max_iter:
         for i in range(SearchAgents_no):
-            # Calculate objective function for each search agent
+            # Calcular la función objetivo para cada pangolín
             fitness[i] = fobj(Positions[i, :])
             
-            # Update the location of Manis pentadactyla
+            # Actualizar la ubicación del pangolín (Manis pentadactyla)
             if fitness[i] <= Manis_score:
                 Manis_score = fitness[i]
                 Manis_pos = Positions[i, :].copy()
@@ -43,48 +43,48 @@ def bCPO(SearchAgents_no, Max_iter, dim, fobj):
         r1 = (np.random.rand() + np.random.rand()) / 2
         r2 = np.random.rand()
         
-        # Aroma concentration factor
+        # Factor de concentración de aroma
         Cm = Aroma_concentration(Max_iter)
         
-        # Rapid decrease factor
+        # Factor de disminución rápida
         C1 = (2 - ((t * 2) / Max_iter))
         
-        # Aroma trajectory factor
+        # Factor de trayectoria del aroma
         a = Aroma_trajectory(SearchAgents_no, 0.6)
         
-        # Levy step length
+        # Longitud del paso de Lévy
         Levy_Step_length = Levy(SearchAgents_no)
         
         for i in range(SearchAgents_no):
-            # Energy correction factor
+            # Factor de corrección de energía
             lamda = 0.1 * np.random.rand()
             VO2 = 0.2 * np.random.rand()
             
-            # Fatigue index factor
+            # Factor del índice de fatiga
             Fatigue = np.log(((t * np.pi) / Max_iter) + 1)
             
-            # Energy consumption factor
+            # Factor de consumo de energía
             E = np.exp(-lamda * VO2 * t * (1 + Fatigue))
             l = np.random.randint(0, Max_iter)
             r3 = np.random.rand()
             
-            # Energy fluctuation factor
+            # Factor de fluctuación de energía
             A1 = lamda * (2 * E * np.random.rand() - E)
             
             # --- Variables temporales para la posición continua ---
             new_position_continuous = np.zeros(dim)
             
-            ## Luring behavior
+            ## Comportamiento de Atracción (Luring)
             if Cm[l] >= 0.2 and r3 <= 0.5:
-                ## Attraction and Capture Stage
+                ## Etapa de Atracción y Captura
                 D_ant = np.abs(a * Ant_pos - Manis_pos)
                 New_Ant_pos = Positions[i, :] + Ant_pos - A1 * D_ant
                 
-                ## Movement and Feeding Stage
+                ## Etapa de Movimiento y Alimentación
                 D_manis = np.abs(C1 * New_Ant_pos - Positions[i, :]) - Levy_Step_length[i] * (1 - t / Max_iter)
                 New_Manis_pos = Positions[i, :] + Manis_pos - A1 * D_manis
                 
-                ## Positions are updated (Posición Continua)
+                ## Se actualizan las posiciones (Posición Continua)
                 den = (4 * np.pi) * np.tan(New_Manis_pos * np.exp((t * 4 * np.pi**2) / Max_iter))
                 den[den == 0] = np.finfo(float).eps
                 
@@ -92,19 +92,19 @@ def bCPO(SearchAgents_no, Max_iter, dim, fobj):
                     (np.sin(New_Ant_pos * np.exp(t / Max_iter)) / den) * \
                     r1 * r2 * np.random.rand()
                 
-            ## Predation behavior
+            ## Comportamiento de Depredación (Predation)
             elif Cm[l] <= 0.7 or r3 > 0.5:
-                ## Search and Localization Stage
+                ## Etapa de Búsqueda y Localización
                 if Cm[l] >= 0 and Cm[l] < 0.3:
                     D_manis = np.abs(Levy_Step_length[i] * Manis_pos - Positions[i, :])
                     New_Manis_pos = np.sin(C1 * Positions[i, :] + A1 * np.abs(Manis_pos - Levy_Step_length[i] * D_manis))
                     new_position_continuous = New_Manis_pos * C1
-                ## Rapid Approach Stage
+                ## Etapa de Acercamiento Rápido
                 elif Cm[l] >= 0.3 and Cm[l] < 0.6:
                     D_manis = np.abs(a * Manis_pos - Positions[i, :])
                     New_Manis_pos = Positions[i, :] - A1 * np.abs(Manis_pos - np.exp(-a) * (np.random.rand() * np.pi) * D_manis)
                     new_position_continuous = New_Manis_pos * C1
-                ## Digging and Feeding Stage
+                ## Etapa de Excavación y Alimentación
                 elif Cm[l] >= 0.6:
                     D_manis = np.abs(C1 * Manis_pos - Positions[i, :])
                     New_Manis_pos = Positions[i, :] + A1 * np.abs(Manis_pos - D_manis)

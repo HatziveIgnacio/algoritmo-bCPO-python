@@ -12,14 +12,14 @@ def Aroma_concentration(Max_iter):
         H = 0.5 * r1
         r2 = np.random.rand()
         u = 2 + r2
-        # Use t+1 because MATLAB loops are 1-indexed and mathematical formulas usually assume 1-based steps
+        # Usar t+1 porque las fórmulas matemáticas usualmente asumen pasos desde 1
         t_step = t + 1
         
         sigma_y[t] = 50 - ((10 * t_step) / Max_iter)
         sigma_z[t] = sin((pi * t_step) / Max_iter) + 40 * exp(-t_step / Max_iter) - 10 * log((pi * t_step) / Max_iter)
         M[t] = (Q / (pi * u * sigma_y[t] * sigma_z[t])) * exp(-(H**2) / (2 * (sigma_z[t])**2))
         
-    # rescale M between 0 and 1
+    # Reescalar M entre 0 y 1
     m_min = np.min(M)
     m_max = np.max(M)
     if m_max > m_min:

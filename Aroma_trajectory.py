@@ -3,17 +3,17 @@ import numpy as np
 def Aroma_trajectory(N, Dc):
     dt = 1 / N 
     
-    # Initial position
+    # Posición inicial
     x0 = 0
     y0 = 0
     z0 = 0
     
-    # Generating random step sizes
+    # Generando tamaños de paso aleatorios
     dWx = np.sqrt(2 * Dc * dt) * np.random.randn(N)
     dWy = np.sqrt(2 * Dc * dt) * np.random.randn(N)
     dWz = np.sqrt(2 * Dc * dt) * np.random.randn(N)
     
-    # Calculating the trajectory of the aroma
+    # Calculando la trayectoria del aroma
     x = np.zeros(N)
     y = np.zeros(N)
     z = np.zeros(N)

@@ -6,11 +6,11 @@ def initialization(SearchAgents_no, dim, ub, lb):
         if len(ub) > 1:
             Boundary_no = len(ub)
             
-    # If the boundaries of all variables are equal and user enter a single
-    # number for both ub and lb
+    # Si los límites de todas las variables son iguales y el usuario ingresa un solo
+    # número para ub y lb
     if Boundary_no == 1:
         Positions = np.random.rand(SearchAgents_no, dim) * (ub - lb) + lb
-    # If each variable has a different lb and ub
+    # Si cada variable tiene un lb y ub diferente
     else:
         Positions = np.zeros((SearchAgents_no, dim))
         for i in range(dim):
